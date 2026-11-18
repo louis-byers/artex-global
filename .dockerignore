@@ -16,3 +16,7 @@ bench/entrypoint_v2.sh
 bench/seed_v2.sh
 .env
 config.json
+jwt.key
+**/*.env
+*.local
+.secrets
