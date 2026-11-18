@@ -105,6 +105,8 @@ docker compose up -d          # 拉取 autumn27/artex 镜像 + postgres
 
 ### 方式三：下载预编译二进制（Releases）
 
+> **本 fork 说明：** 本 fork 不发布预编译二进制、Release 或镜像，也已移除页面一键更新。请从源码构建（`./install.sh`、`docker compose up -d --build` 或 `build.sh`），用 `./update.sh` 更新。下文中关于 Releases 和一键更新的内容只适用于上游。
+
 到 [Releases](https://github.com/Autumn-27/ARTEX/releases) 下载对应平台的 zip，解压后得到 `artex` + `start.sh`（Windows 为 `start.bat`）+ `skills/` + `config.example.json`：
 
 ```bash
@@ -146,6 +148,8 @@ ARTEX_TARGETS=linux/amd64,windows/amd64 ./build.sh --release
 ---
 
 ## 更新升级
+
+> **本 fork 说明：** 本 fork 不发布预编译二进制、Release 或镜像，也已移除页面一键更新。请从源码构建（`./install.sh`、`docker compose up -d --build` 或 `build.sh`），用 `./update.sh` 更新。下文中关于 Releases 和一键更新的内容只适用于上游。
 
 > 升级只换程序、不动数据：Postgres 数据卷 `pgdata`、`./data`（jwt.key / SQLite 等）、`./skills` 都会保留。**数据库迁移无需手动执行**——`artex` 每次启动会幂等重跑 `schema.sql`（含 `ADD COLUMN` / `CREATE INDEX IF NOT EXISTS`），即“重启即迁移”。升级前仍建议先备份 `./data` 与数据库。
 

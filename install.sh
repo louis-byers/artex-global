@@ -45,10 +45,10 @@ install_docker(){
   else
     info "이미 있는 .env 파일을 그대로 사용합니다"
   fi
-  info "이미지를 받아 기동합니다…"
-  docker compose pull || true
-  if ! docker compose up -d; then
-    warn "이미지 ghcr.io/jiwoochris/artex-global 를 받거나 기동하지 못했습니다(.env 의 ARTEX_TAG 가 발행된 태그인지, 네트워크가 되는지 확인하세요)"
+  info "소스에서 이미지를 빌드해 기동합니다(처음에는 몇 분 걸립니다)…"
+  export ARTEX_VERSION="$(git describe --tags --always --dirty 2>/dev/null || echo dev)"
+  if ! docker compose up -d --build; then
+    warn "이미지를 빌드하거나 기동하지 못했습니다(docker compose build 출력과 네트워크를 확인하세요)"
     warn "이 스크립트를 다시 실행해 \"2) 로컬 실행 (go 컴파일)\" 을 고르거나, README \"소스에서 단일 바이너리 컴파일\" 경로로 빌드할 수도 있습니다"
     die "Docker Compose(전부 Docker) 기동에 실패했습니다"
   fi

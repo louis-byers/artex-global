@@ -17,7 +17,7 @@ string or behaviour verified in this repository's source, not inferred.
 - **`sigma/artex_enrich_user_agent.yml`** — inbound `artex-enrich/1.0` User-Agent from ARTEX asset
   enrichment (`enrich/enrich.go`). Target-side, supporting indicator. `level: high`.
 - **`sigma/artex_selfupdate_egress.yml`** — outbound `artex-selfupdate` User-Agent from the self-update
-  routine (`selfupdate/github.go`). Host/forensic egress indicator. `level: medium`.
+  routine (upstream `selfupdate/github.go`, removed in this fork). Host/forensic egress indicator. `level: medium`.
 - **`sigma/artex_guard_audit_framing.yml`** — the platform-guard control marker written to the audit log
   on a blocked tool call (`guard/guard.go`). Host/forensic indicator. `level: high`.
 - **`sigma/destructive_command_hunting.yml`** — destructive shell/DB commands mirroring the ARTEX guard's
@@ -135,7 +135,7 @@ The rules ship with reproducible tests in [`tests/`](tests/), each needing only 
   (or vice versa) fails the test.
 - **Indicator source-of-truth** ([`tests/indicators/run.sh`](tests/indicators/run.sh)) checks that each rule's
   pinned indicator is still the string the upstream source emits — `artex-enrich/1.0` in `enrich/enrich.go`,
-  `artex-selfupdate` in `selfupdate/`, the guard marker in `guard/guard.go`, the destructive tokens in
+  `artex-selfupdate` (upstream builds only), the guard marker in `guard/guard.go`, the destructive tokens in
   `db/db.go` — and is still pinned in the rule. It catches the drift the other three miss: an upstream re-sync
   that changes a User-Agent or marker while every rule still compiles and fires. The same test re-reads the
   machine-readable [`indicators/artex_indicators.csv`](indicators/artex_indicators.csv) and asserts every

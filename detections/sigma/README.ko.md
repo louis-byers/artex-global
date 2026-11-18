@@ -20,7 +20,7 @@ SIEM·EDR 질의 언어로 변환해 씁니다. 모든 지표는 추정이 아�
   User-Agent*. 자산 보강(`enrich/enrich.go`)이 보내는 인바운드 `artex-enrich/1.0` User-Agent 입니다.
   대상 측에서 관측하는 보조 지표입니다. `level: high`.
 - **[`artex_selfupdate_egress.yml`](artex_selfupdate_egress.yml)**: *ARTEX Self-Update Egress
-  User-Agent*. 자가 업데이트 루틴(`selfupdate/github.go`)이 내보내는 아웃바운드 `artex-selfupdate`
+  User-Agent*. 자가 업데이트 루틴(상류 `selfupdate/github.go`, 이 포크에서는 제거됨)이 내보내는 아웃바운드 `artex-selfupdate`
   User-Agent 입니다. 호스트·포렌식 egress 지표입니다. `level: medium`.
 - **[`artex_guard_audit_framing.yml`](artex_guard_audit_framing.yml)**: *ARTEX Platform Guard
   Audit-Log Framing*. 도구 호출이 차단될 때 감사 로그에 기록되는 플랫폼 가드 통제 마커입니다

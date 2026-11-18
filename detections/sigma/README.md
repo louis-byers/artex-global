@@ -25,7 +25,7 @@ One rule, one observable fact. Convert them individually or as part of the whole
   Target-side, supporting indicator. `level: high`.
 - **[`artex_selfupdate_egress.yml`](artex_selfupdate_egress.yml)** — *ARTEX Self-Update Egress
   User-Agent*. Outbound `artex-selfupdate` User-Agent from the self-update routine
-  (`selfupdate/github.go`). Host/forensic egress indicator. `level: medium`.
+  (upstream `selfupdate/github.go`, removed in this fork). Host/forensic egress indicator. `level: medium`.
 - **[`artex_guard_audit_framing.yml`](artex_guard_audit_framing.yml)** — *ARTEX Platform Guard
   Audit-Log Framing*. The platform-guard control marker written to the audit log on a blocked tool
   call (`guard/guard.go`). Host/forensic indicator. `level: high`.

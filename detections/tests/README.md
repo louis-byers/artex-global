@@ -359,7 +359,7 @@ pcap test still fires — and the deployed rule silently stops matching real ART
 each indicator, bidirectionally:
 
 - **Source still emits it** — the value is present in the upstream source file(s) that produce it
-  (`artex-enrich/1.0` in `enrich/enrich.go`, `artex-selfupdate` in `selfupdate/`, the guard marker in
+  (`artex-enrich/1.0` in `enrich/enrich.go`, `artex-selfupdate` (upstream builds only), the guard marker in
   `guard/guard.go`). A missing value means an upstream change the rule has not caught up with.
 - **Rule still pins it** — the value is present in the rule built on it, so a rule edit cannot quietly move
   the indicator away from its source. The Suricata rule is checked by its `startswith` prefix, matching how
@@ -458,7 +458,7 @@ recorded reference), and avoid any content that reads as attack guidance. See
 
 All eight suites run in CI (see [`../../.github/workflows/detections.yml`](../../.github/workflows/detections.yml))
 on every push or pull request that touches `detections/` — and the indicator test also runs when the upstream
-source files it pins (`enrich/`, `selfupdate/`, `guard/`, `db/`, `cmd/artex/main.go`) change — so a rule
+source files it pins (`enrich/`, `guard/`, `db/`, `cmd/artex/main.go`) change — so a rule
 change that drops an indicator, drifts from the ATT&CK layer, stops converting on a documented backend,
 breaks a SigmaHQ convention, falls out of sync with the source, lets the MISP event drift from the CSV, or
 pins a new source the workflow does not yet watch turns the build red before it can merge.

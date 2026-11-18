@@ -149,9 +149,6 @@
     "viewTasks": "タスクを見る"
   },
   "header": {
-    "updateBadge": "新バージョン {latest}",
-    "updateBadgeShort": "新バージョン",
-    "updateTitle": "新バージョン {latest} が見つかりました。クリックするとアップデートへ移動します。",
     "version": "バージョン · {version}"
   },
   "nav": {
@@ -3185,46 +3182,6 @@
       "title": "セッション入力欄の送信キー",
       "desc": "会話ページとタスク詳細のメインエージェントセッション入力欄がこの設定を共有します。選択すると即座に反映され、保存は不要です。<br></br>この設定は<b>このブラウザにのみ保存</b>され、アカウントとは同期されないため、ブラウザを変更したりサイトデータを消去したりした場合は再設定が必要です。",
       "label": "送信方式"
-    },
-    "update": {
-      "title": "バージョンとアップデート",
-      "desc": "GitHub で新しいバージョンを確認してインストールします。アップデートするとプログラムが再起動し、実行中のタスクが中断されます。",
-      "currentVersion": "現在のバージョン",
-      "latestVersion": "最新バージョン",
-      "modeDocker": "Docker",
-      "modeStandalone": "スタンドアロンプログラム",
-      "changelog": "変更履歴",
-      "connectError": "GitHub に接続できません: {error} 上でグローバルプロキシを設定してから、もう一度お試しください。",
-      "noAsset": "{latest} には {os}/{arch} 用のリリースパッケージがなく ({asset} が見つかりません)、自動でアップデートできません。",
-      "willDownloadPrefix": "ダウンロード対象: ",
-      "willDownloadSize": " ({size})",
-      "willDownloadSuffix": "。SHA256 検証とスモークテストに合格した場合にのみ置き換え、失敗した場合は現在のバージョンを自動的に維持します。",
-      "upToDate": "すでに最新バージョンです。",
-      "dockerNote": "Docker 環境でのアップデートはプログラム本体のみを置き換え、イメージ内の playwright / nmap などのツールチェーンは更新しません。また、<code>docker compose up -d</code> コマンドでコンテナを再作成すると、イメージに含まれるバージョンに戻ります。イメージも一緒にアップグレードするには、<code>docker compose pull artex && docker compose up -d artex</code> コマンドを実行してください。",
-      "restarting": "再起動して新しいバージョンを適用しています。しばらくお待ちください (ページは自動的に再読み込みされます)…",
-      "check": "アップデートを確認",
-      "updateToVersion": "{latest} にアップデート",
-      "updateNow": "今すぐアップデート",
-      "rollback": "前のバージョンにロールバック",
-      "footer": "ワンクリックアップデートは、デーモンスクリプトがプログラムを再起動する機能に依存しています。<code>start.sh</code> (Windows は <code>start.bat</code>) で ARTEX を起動してください。artex 本体を直接実行すると、プログラムの終了後に自動で再起動されません。",
-      "toast": {
-        "checkFailed": "アップデートの確認に失敗しました: {error}",
-        "found": "新しいバージョン {latest} が見つかりました",
-        "upToDate": "すでに最新バージョンです",
-        "updated": "{version} にアップデートしました。ページを再読み込みしています",
-        "restartTimeout": "サービスの再起動待ちがタイムアウトしました。バックエンドのログを確認するか、artex が start.sh / start.bat で起動されたことを確認してください。",
-        "updateFailed": "アップデートに失敗しました: {error}",
-        "startFailed": "アップデートの開始に失敗しました: {error}",
-        "rollbackSwitched": "前のバージョンに切り替えました。再起動中…",
-        "rollbackFailed": "ロールバックに失敗しました: {error}",
-        "preparing": "準備中…"
-      },
-      "confirm": {
-        "title": "{latest} にアップデートしますか?",
-        "restart": "アップデートするとプログラムが再起動し、実行中のタスクが中断されます。",
-        "docker": "注意: コンテナ内でのアップデートはプログラム本体のみを置き換え、イメージ内の playwright / nmap などのツールチェーンは更新しません。新しいバージョンが新しいツールに依存する場合は、docker compose pull で入れ替えて実行してください。",
-        "rollback": "前のバージョンにロールバックしますか?\n\nプログラムが再起動し、実行中のタスクが中断されます。\n注意: データベース構造は元に戻らないため、前のバージョンが新しいバージョンで記録されたデータを認識できない場合があります。"
-      }
     },
     "language": {
       "title": "表示言語",

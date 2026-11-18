@@ -8,7 +8,7 @@ La interfaz y la salida generada están en inglés de forma predeterminada y **p
 
 Español · [English](README.md) · [한국어](README.ko.md) · [中文](README.zh.md) · [日本語](README.ja.md)
 
-[![ci](https://github.com/jiwoochris/artex-global/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/ci.yml) [![detections](https://github.com/jiwoochris/artex-global/actions/workflows/detections.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/detections.yml) [![web](https://github.com/jiwoochris/artex-global/actions/workflows/web.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/web.yml) [![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![ci](https://github.com/louis-byers/artex-global/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/ci.yml) [![detections](https://github.com/louis-byers/artex-global/actions/workflows/detections.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/detections.yml) [![web](https://github.com/louis-byers/artex-global/actions/workflows/web.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/web.yml) [![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
 </div>
 
@@ -58,7 +58,7 @@ El ARTEX original tiene sus prompts, su interfaz y su documentación enteramente
 - **Enunciar los límites legales** — la advertencia de "solo dentro del alcance autorizado" se expresa con claridad, junto con los avisos específicos de Corea sobre derecho de redes y privacidad (los mantenedores residen en Corea); también se aplica la ley del lugar donde usted opere.
 - **Dar soporte a diversas infraestructuras de LLM** — el proveedor de LLM puede cambiarse de un modelo de frontera a cualquier endpoint compatible con OpenAI (modelos locales o abiertos). Consulte [Configuración](#configuración).
 
-> Los límites y la política de diseño de esta edición multilingüe se documentan con más detalle en las notas de trabajo del repositorio. Para facilitar la comparación (diff) con el repositorio original, el documento chino original se conserva como [`README.zh.md`](README.zh.md).
+> Los límites y la política de diseño de esta edición multilingüe se documentan con más detalle en las notas de trabajo del repositorio. El documento chino original se conserva como [`README.zh.md`](README.zh.md) para dar crédito al proyecto original del que deriva.
 
 ---
 
@@ -90,13 +90,13 @@ Las pantallas originales (interfaz en chino) están disponibles en [`README.zh.m
 
 > **Requisitos previos:** Docker y Docker Compose. La base de datos es **PostgreSQL**, levantada por compose. La exploración requiere un **LLM** (`ANTHROPIC_API_KEY` u `OPENAI_API_KEY`; también se puede configurar en la interfaz).
 
-> **Imagen:** el servicio `artex` de `docker-compose.yml` descarga `ghcr.io/jiwoochris/artex-global`, la imagen de la edición global que este repositorio publica en GitHub Container Registry con cada etiqueta de versión (`v*`). La etiqueta predeterminada es `latest` (la versión más reciente); fije `ARTEX_TAG` en `.env` para anclar una versión concreta. La imagen original `autumn27/artex` se ha retirado de Docker Hub y ya no se utiliza.
+> **Imagen:** el servicio `artex` de `docker-compose.yml` construye la imagen desde este código fuente con el `Dockerfile` del repositorio. Este fork no publica imágenes ni binarios precompilados, y la aplicación no tiene autoactualización.
 
 ```bash
-git clone https://github.com/jiwoochris/artex-global.git
+git clone https://github.com/louis-byers/artex-global.git
 cd artex-global
 cp .env.example .env          # set POSTGRES_PASSWORD; ANTHROPIC_API_KEY is optional
-docker compose up -d          # brings up the artex image + postgres together
+docker compose up -d --build  # construye la imagen artex desde el código fuente y la arranca junto con postgres
 # → open http://localhost:8787 (on first visit, set the admin password at /setup)
 #   /setup asks for the setup token printed in the startup log: docker compose logs artex | grep -F '[auth]'
 ```
@@ -105,9 +105,9 @@ La imagen incluye herramientas habituales (ripgrep, curl, vim, npm, nmap y más)
 
 ### Otros métodos de instalación
 
-El proyecto original ofrece varios métodos: un script de instalación (`./install.sh`), binarios precompilados (Releases) y una compilación de binario único desde el código fuente. Los comandos y el procedimiento completo están reunidos en la sección "安装" (Instalación) de [`README.zh.md`](README.zh.md#安装) (en chino); lo esencial se reproduce a continuación.
+El proyecto original ofrece varios métodos: un script de instalación (`./install.sh`), binarios precompilados (Releases) y una compilación de binario único desde el código fuente. Este fork solo admite las compilaciones desde el código fuente; no publica Releases. Los comandos y el procedimiento completo están reunidos en la sección "安装" (Instalación) de [`README.zh.md`](README.zh.md#安装) (en chino); lo esencial se reproduce a continuación.
 
-- **Script de instalación:** ejecutar `./install.sh` detecta/instala Docker y luego le permite elegir "① todo en Docker" o "② compilar y ejecutar localmente". "① todo en Docker" descarga y arranca la misma imagen que el inicio rápido de arriba (`ghcr.io/jiwoochris/artex-global`), mientras que "② compilar y ejecutar localmente" la construye usted mismo de la misma manera que la **compilación de binario único desde el código fuente** descrita abajo.
+- **Script de instalación:** ejecutar `./install.sh` detecta/instala Docker y luego le permite elegir "① todo en Docker" o "② compilar y ejecutar localmente". "① todo en Docker" construye y arranca la misma imagen que el inicio rápido de arriba, mientras que "② compilar y ejecutar localmente" la construye usted mismo de la misma manera que la **compilación de binario único desde el código fuente** descrita abajo.
 - **Compilación de binario único desde el código fuente:**
 
   ```bash
@@ -119,7 +119,7 @@ El proyecto original ofrece varios métodos: un script de instalación (`./insta
 
 > El `npm ci` del paso 1) instala las devDependencies que la compilación necesita (por ejemplo, `@tailwindcss/postcss`). Si su shell tiene `NODE_ENV=production` establecido, `npm ci` omite las devDependencies y la compilación falla con `Error: Cannot find module '@tailwindcss/postcss'`; en ese caso, instálelas con `npm ci --include=dev`.
 
-> Arranque con `start.sh` (`start.bat` en Windows) en lugar de ejecutar `./artex` directamente. Ese script es un supervisor que reinicia el programa según su código de salida, y también gestiona la "actualización con un clic" de la interfaz.
+> Arranque con `start.sh` (`start.bat` en Windows) en lugar de ejecutar `./artex` directamente. Ese script es un supervisor que reinicia el programa cuando termina de forma anómala. Para actualizar, obtenga el código fuente y ejecute `./update.sh`.
 
 ---
 

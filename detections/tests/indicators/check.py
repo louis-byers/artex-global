@@ -75,7 +75,10 @@ INDICATORS = [
     {
         "label": "self-update egress User-Agent",
         "value": "artex-selfupdate",
-        "sources": ["selfupdate/github.go", "selfupdate/stage.go"],
+        # This fork removed self-update, so no local source emits the UA any more.
+        # Upstream builds in the wild still do; the rule stays to find them.
+        "sources": [],
+        "upstream_only": "jiwoochris/artex-global@v0.3.15-global.1 selfupdate/github.go, selfupdate/stage.go",
         "rules": ["detections/sigma/artex_selfupdate_egress.yml"],
     },
     {
@@ -133,6 +136,12 @@ def contains(rel, needle):
 print("== 1/5  exact fingerprints are still emitted by the upstream source ==")
 for ind in INDICATORS:
     value, label = ind["value"], ind["label"]
+    if not ind["sources"]:
+        if ind.get("upstream_only"):
+            ok("%s: %r is upstream-only (%s)" % (label, value, ind["upstream_only"]))
+        else:
+            bad("%s: no source file and no upstream_only provenance" % label)
+        continue
     present = [s for s in ind["sources"] if contains(s, value) is True]
     missing_files = [s for s in ind["sources"] if contains(s, value) is None]
     if present:
@@ -224,6 +233,14 @@ else:
             if not src_files:
                 bad("%s: row %r cites no source file" % (CSV_REL, rid))
             for s in src_files:
+                if s.startswith("upstream:"):
+                    # Only an indicator that declares upstream_only may skip the source grep.
+                    if any(i["value"] == value and i.get("upstream_only") for i in INDICATORS):
+                        ok("%s: %r upstream-only (%s)" % (rid, value, s))
+                    else:
+                        bad("%s: row %r cites %s but no indicator declares %r upstream_only"
+                            % (CSV_REL, rid, s, value))
+                    continue
                 hit = contains(s, value)
                 if hit is True:
                     ok("%s: %r grounded in %s" % (rid, value, s))
@@ -310,7 +327,7 @@ for ind in INDICATORS:
 needed_sources.add(DENYLIST["source"])
 for rec in csv_rows:
     for s in rec["source"].split(";"):
-        if s:
+        if s and not s.startswith("upstream:"):  # provenance, not a file in this repo
             needed_sources.add(s)
 needed_sources = {s for s in needed_sources if not s.startswith("detections/")}
 

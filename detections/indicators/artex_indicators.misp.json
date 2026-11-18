@@ -32,7 +32,7 @@
         "to_ids": true,
         "disable_correlation": false,
         "value": "artex-selfupdate",
-        "comment": "ARTEX self-update egress User-Agent to the release host (selfupdate/github.go, selfupdate/stage.go). Seen in outbound logs from an ARTEX host. Sigma: artex_selfupdate_egress.yml."
+        "comment": "ARTEX self-update egress User-Agent to the release host (upstream jiwoochris/artex-global@v0.3.15-global.1 selfupdate/github.go; removed from this fork). Seen in outbound logs from an ARTEX host. Sigma: artex_selfupdate_egress.yml."
       },
       {
         "uuid": "053cbbbd-c345-49f0-b6e3-1b6f6075a218",
