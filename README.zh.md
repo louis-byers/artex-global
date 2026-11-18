@@ -71,6 +71,8 @@ AI 自主渗透测试系统（Go 后端 + Next.js 前端）
 
 > 依赖数据库 **PostgreSQL**；探索需配置 **LLM**（`ANTHROPIC_API_KEY` 或 `OPENAI_API_KEY`，也可在 UI 里配）。
 
+> **本 fork 说明：** 本 fork 的源码地址是 `https://github.com/louis-byers/artex-global.git`，请克隆它，而不是下文中的 `Autumn-27/ARTEX`。本 fork 不发布预编译二进制、Release 或镜像，也已移除页面一键更新。请从源码构建（`./install.sh`、`docker compose up -d --build` 或 `build.sh`），用 `./update.sh` 更新。下文中关于 Releases、拉取镜像和一键更新的内容只适用于上游。
+
 ### 方式一：一键安装脚本（推荐）
 
 ```bash
@@ -104,8 +106,6 @@ docker compose up -d          # 拉取 autumn27/artex 镜像 + postgres
 `Authorization=Bearer <token>` 填写。
 
 ### 方式三：下载预编译二进制（Releases）
-
-> **本 fork 说明：** 本 fork 不发布预编译二进制、Release 或镜像，也已移除页面一键更新。请从源码构建（`./install.sh`、`docker compose up -d --build` 或 `build.sh`），用 `./update.sh` 更新。下文中关于 Releases 和一键更新的内容只适用于上游。
 
 到 [Releases](https://github.com/Autumn-27/ARTEX/releases) 下载对应平台的 zip，解压后得到 `artex` + `start.sh`（Windows 为 `start.bat`）+ `skills/` + `config.example.json`：
 

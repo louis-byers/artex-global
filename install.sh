@@ -99,16 +99,18 @@ JSON
   command -v go >/dev/null 2>&1 || die "Go 를 찾을 수 없습니다. 먼저 Go (>=1.26) 를 설치해 주세요: https://go.dev/dl/"
   ok "Go: $(go version)"
 
+  # Docker 경로와 같은 방식으로 버전을 박아 넣습니다(없으면 dev).
+  local ver; ver="$(git describe --tags --always --dirty 2>/dev/null || echo dev)"
   # 프런트엔드를 내장하려면 node 로 정적 산출물을 만들어야 합니다
   if command -v npm >/dev/null 2>&1; then
     info "프런트엔드 정적 산출물을 빌드합니다…"
     ( cd web && npm ci && npm run build:static )
     rm -rf server/webui/dist && mkdir -p server/webui && cp -r web/out server/webui/dist
     info "프런트엔드를 내장한 단일 바이너리를 컴파일합니다…"
-    CGO_ENABLED=0 go build -tags embedui -trimpath -o artex ./cmd/artex
+    CGO_ENABLED=0 go build -tags embedui -trimpath -ldflags "-X main.version=$ver" -o artex ./cmd/artex
   else
     warn "npm 을 찾을 수 없습니다: 프런트엔드를 내장하지 않은 백엔드만 컴파일합니다 (프런트엔드는 npm run dev 로 따로 실행)"
-    CGO_ENABLED=0 go build -o artex ./cmd/artex
+    CGO_ENABLED=0 go build -ldflags "-X main.version=$ver" -o artex ./cmd/artex
   fi
   ok "컴파일을 완료했습니다 → ./artex"
 

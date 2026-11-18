@@ -21,6 +21,7 @@ The upstream ARTEX project's per-version release history (0.3.x and earlier) and
 
 ### Fixed
 
+- Local builds from `./install.sh` and `./update.sh` now stamp the `git describe` version into the binary, as the Docker path does. Before, the startup banner and `/api/health` showed `dev`.
 - Distinguish task report loading failures from empty reports and offer a retry button. Late responses from a previous task cannot replace the current task report.
 
 ## [0.3.15-global.1] · 2026-10-14 · ARTEX-global transition release

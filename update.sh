@@ -45,15 +45,17 @@ update_local(){
   [ -f config.json ] || warn "config.json 을 찾을 수 없습니다. 최초 배포라면 ./install.sh 를 사용하세요"
   ok "Go: $(go version)"
 
+  # Docker 경로와 같은 방식으로 버전을 박아 넣습니다(없으면 dev).
+  local ver; ver="$(git describe --tags --always --dirty 2>/dev/null || echo dev)"
   if command -v npm >/dev/null 2>&1; then
     info "프런트엔드 정적 산출물을 다시 빌드합니다…"
     ( cd web && npm ci && npm run build:static )
     rm -rf server/webui/dist && cp -r web/out server/webui/dist
     info "프런트엔드를 내장한 단일 바이너리를 다시 컴파일합니다…"
-    CGO_ENABLED=0 go build -tags embedui -trimpath -o artex ./cmd/artex
+    CGO_ENABLED=0 go build -tags embedui -trimpath -ldflags "-X main.version=$ver" -o artex ./cmd/artex
   else
     warn "npm 을 찾을 수 없습니다. 프런트엔드를 내장하지 않은 백엔드만 컴파일합니다(프런트엔드는 npm run dev 로 따로 실행해야 합니다)"
-    CGO_ENABLED=0 go build -o artex ./cmd/artex
+    CGO_ENABLED=0 go build -ldflags "-X main.version=$ver" -o artex ./cmd/artex
   fi
   ok "컴파일 완료 → ./artex"
   warn "변경을 적용하려면 실행 중인 artex 프로세스를 재시작하세요(재시작 시 schema 를 자동으로 마이그레이션합니다)"
