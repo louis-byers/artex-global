@@ -12,7 +12,7 @@
 
 - **`sigma/artex_enrich_user_agent.yml`**: ARTEX 자산 보강(`enrich/enrich.go`)이 보내는 인바운드
   `artex-enrich/1.0` User-Agent 입니다. 대상 측에서 관측하는 보조 지표입니다. `level: high`.
-- **`sigma/artex_selfupdate_egress.yml`**: 자가 업데이트 루틴(`selfupdate/github.go`)이 내보내는
+- **`sigma/artex_selfupdate_egress.yml`**: 자가 업데이트 루틴(상류 `selfupdate/github.go`, 이 포크에서는 제거됨)이 내보내는
   아웃바운드 `artex-selfupdate` User-Agent 입니다. 호스트·포렌식 관점의 송신(egress) 지표입니다.
   `level: medium`.
 - **`sigma/artex_guard_audit_framing.yml`**: 도구 호출이 차단될 때 감사 로그에 기록되는 플랫폼
@@ -128,7 +128,7 @@ mitmproxy CA 신뢰 변수를 함께 지니는지(`agent/worker.go`)를 `/proc` 
   추가하면(또는 그 반대면) 테스트가 실패합니다.
 - **지표 근거(source-of-truth)** ([`tests/indicators/run.sh`](tests/indicators/run.sh)): 각 규칙이
   고정한 지표가 여전히 상류 소스가 내보내는 바로 그 문자열인지 확인합니다. `enrich/enrich.go` 의
-  `artex-enrich/1.0`, `selfupdate/` 의 `artex-selfupdate`, `guard/guard.go` 의 가드 마커, `db/db.go`
+  `artex-enrich/1.0`, `artex-selfupdate`(상류 빌드만), `guard/guard.go` 의 가드 마커, `db/db.go`
   의 파괴 토큰이 규칙에도 여전히 고정돼 있는지 봅니다. 다른 세 테스트가 놓치는 드리프트, 즉 모든
   규칙이 컴파일되고 발화하는 와중에 상류 재동기화가 User-Agent 나 마커를 바꿔 버리는 경우를
   잡습니다. 같은 테스트가 기계가 읽는 [`indicators/artex_indicators.csv`](indicators/artex_indicators.csv)

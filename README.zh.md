@@ -71,6 +71,8 @@ AI 自主渗透测试系统（Go 后端 + Next.js 前端）
 
 > 依赖数据库 **PostgreSQL**；探索需配置 **LLM**（`ANTHROPIC_API_KEY` 或 `OPENAI_API_KEY`，也可在 UI 里配）。
 
+> **本 fork 说明：** 本 fork 的源码地址是 `https://github.com/louis-byers/artex-global.git`，请克隆它，而不是下文中的 `Autumn-27/ARTEX`。本 fork 不发布预编译二进制、Release 或镜像，也已移除页面一键更新。请从源码构建（`./install.sh`、`docker compose up -d --build` 或 `build.sh`），用 `./update.sh` 更新。下文中关于 Releases、拉取镜像和一键更新的内容只适用于上游。
+
 ### 方式一：一键安装脚本（推荐）
 
 ```bash
@@ -146,6 +148,8 @@ ARTEX_TARGETS=linux/amd64,windows/amd64 ./build.sh --release
 ---
 
 ## 更新升级
+
+> **本 fork 说明：** 本 fork 不发布预编译二进制、Release 或镜像，也已移除页面一键更新。请从源码构建（`./install.sh`、`docker compose up -d --build` 或 `build.sh`），用 `./update.sh` 更新。下文中关于 Releases 和一键更新的内容只适用于上游。
 
 > 升级只换程序、不动数据：Postgres 数据卷 `pgdata`、`./data`（jwt.key / SQLite 等）、`./skills` 都会保留。**数据库迁移无需手动执行**——`artex` 每次启动会幂等重跑 `schema.sql`（含 `ADD COLUMN` / `CREATE INDEX IF NOT EXISTS`），即“重启即迁移”。升级前仍建议先备份 `./data` 与数据库。
 

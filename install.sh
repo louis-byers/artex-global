@@ -45,10 +45,10 @@ install_docker(){
   else
     info "이미 있는 .env 파일을 그대로 사용합니다"
   fi
-  info "이미지를 받아 기동합니다…"
-  docker compose pull || true
-  if ! docker compose up -d; then
-    warn "이미지 ghcr.io/jiwoochris/artex-global 를 받거나 기동하지 못했습니다(.env 의 ARTEX_TAG 가 발행된 태그인지, 네트워크가 되는지 확인하세요)"
+  info "소스에서 이미지를 빌드해 기동합니다(처음에는 몇 분 걸립니다)…"
+  export ARTEX_VERSION="$(git describe --tags --always --dirty 2>/dev/null || echo dev)"
+  if ! docker compose up -d --build; then
+    warn "이미지를 빌드하거나 기동하지 못했습니다(docker compose build 출력과 네트워크를 확인하세요)"
     warn "이 스크립트를 다시 실행해 \"2) 로컬 실행 (go 컴파일)\" 을 고르거나, README \"소스에서 단일 바이너리 컴파일\" 경로로 빌드할 수도 있습니다"
     die "Docker Compose(전부 Docker) 기동에 실패했습니다"
   fi
@@ -99,16 +99,18 @@ JSON
   command -v go >/dev/null 2>&1 || die "Go 를 찾을 수 없습니다. 먼저 Go (>=1.26) 를 설치해 주세요: https://go.dev/dl/"
   ok "Go: $(go version)"
 
+  # Docker 경로와 같은 방식으로 버전을 박아 넣습니다(없으면 dev).
+  local ver; ver="$(git describe --tags --always --dirty 2>/dev/null || echo dev)"
   # 프런트엔드를 내장하려면 node 로 정적 산출물을 만들어야 합니다
   if command -v npm >/dev/null 2>&1; then
     info "프런트엔드 정적 산출물을 빌드합니다…"
     ( cd web && npm ci && npm run build:static )
     rm -rf server/webui/dist && mkdir -p server/webui && cp -r web/out server/webui/dist
     info "프런트엔드를 내장한 단일 바이너리를 컴파일합니다…"
-    CGO_ENABLED=0 go build -tags embedui -trimpath -o artex ./cmd/artex
+    CGO_ENABLED=0 go build -tags embedui -trimpath -ldflags "-X main.version=$ver" -o artex ./cmd/artex
   else
     warn "npm 을 찾을 수 없습니다: 프런트엔드를 내장하지 않은 백엔드만 컴파일합니다 (프런트엔드는 npm run dev 로 따로 실행)"
-    CGO_ENABLED=0 go build -o artex ./cmd/artex
+    CGO_ENABLED=0 go build -ldflags "-X main.version=$ver" -o artex ./cmd/artex
   fi
   ok "컴파일을 완료했습니다 → ./artex"
 

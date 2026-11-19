@@ -1,17 +1,35 @@
 # syntax=docker/dockerfile:1
 #
-# 실행 전용 이미지(이미지 안에서 컴파일하지 않음): 상용 도구만 설치하고, **미리 컴파일한 Linux 단일 바이너리**를 넣는다.
-# 바이너리는 CI 의 binaries job 이 크로스 컴파일하며(순수 Go, QEMU 없음), 목표 아키텍처별로
-# 빌드 컨텍스트의 dist/<TARGETARCH>/artex 에 둔다. 이렇게 하면 다중 아키텍처 빌드에서 arm64 는 apt 계층만
-# 에뮬레이션하면 되고, Next/Go 컴파일은 더 이상 에뮬레이션하지 않아 훨씬 빠르다.
+# 이 저장소 소스에서 바로 빌드하는 이미지입니다. 미리 컴파일한 바이너리나 레지스트리 이미지를 쓰지 않습니다.
+# 빌드 단계(web, go)는 빌드 머신 플랫폼($BUILDPLATFORM)에서 돌고 Go 가 목표 아키텍처로 크로스 컴파일하므로
+# (CGO_ENABLED=0, 순수 Go), 다중 아키텍처 빌드에서도 Next/Go 컴파일은 에뮬레이션하지 않습니다.
 #
-# 로컬에서 이미지를 수동으로 빌드할 때는 먼저 바이너리를 직접 준비한다:
-#   cd web && npm run build:static && cd ..
-#   mkdir -p server/webui && cp -r web/out server/webui/dist
-#   CGO_ENABLED=0 GOARCH=amd64 go build -tags embedui -o dist/amd64/artex ./cmd/artex
-#   docker build -t artex:local .
-FROM python:3.12-slim-bookworm
+#   docker compose build                         # docker-compose.yml 이 이 파일을 씁니다
+#   docker build --build-arg ARTEX_VERSION="$(git describe --tags --always --dirty)" -t artex:local .
+
+# ① 프런트엔드 정적 내보내기
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS web
+WORKDIR /src/web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+COPY web/ ./
+RUN npm run build:static
+
+# ② 프런트엔드를 내장한 단일 바이너리(build.sh 와 같은 플래그)
+FROM --platform=$BUILDPLATFORM golang:1.26-bookworm AS go
+ARG TARGETOS=linux
 ARG TARGETARCH
+ARG ARTEX_VERSION=dev
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+COPY --from=web /src/web/out ./server/webui/dist
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -tags embedui -trimpath \
+      -ldflags "-s -w -buildid= -X main.version=${ARTEX_VERSION}" -o /out/artex ./cmd/artex
+
+# ③ 실행 이미지
+FROM python:3.12-slim-bookworm
 # 상용 도구: ripgrep / curl / vim 에 더해 recon 에 자주 쓰는 도구 묶음(필요에 따라 추가·삭제).
 # Node 는 NodeSource 에서 20.x 를 설치한다: bookworm 기본 apt nodejs 는 18 이고, Playwright 는 >=20 을 요구한다.
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -30,10 +48,9 @@ RUN npm install -g @playwright/mcp@latest @playwright/cli@latest playwright@late
     && playwright install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-# 미리 컴파일한 해당 아키텍처 바이너리(dist/amd64/artex 또는 dist/arm64/artex)
-COPY dist/${TARGETARCH}/artex /app/artex
-# 감시 기동 스크립트: 프로세스 종료 후 종료 코드에 따라 다시 띄울지 결정하며, 화면의 원클릭 업데이트가 이 스크립트로 교체를 완료한다.
-# 이 스크립트는 동시에 SIGTERM 을 artex 로 전달하는 일도 맡는다: docker stop 은 신호를 PID 1 에만 보내므로,
+COPY --from=go /out/artex /app/artex
+# 감시 기동 스크립트: 비정상 종료 시 백오프 후 다시 띄운다.
+# 이 스크립트는 SIGTERM 을 artex 로 전달하는 일도 맡는다: docker stop 은 신호를 PID 1 에만 보내므로,
 # 전달하지 않으면 artex 가 신호를 받지 못해 우아한 종료를 못 하고 10 초 뒤 SIGKILL 로 강제 종료된다.
 COPY start.sh /app/start.sh
 RUN chmod +x /app/artex /app/start.sh

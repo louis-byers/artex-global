@@ -304,7 +304,7 @@ from step 3 of the contribution flow above).
 These eight tests are run by the repository CI
 ([`.github/workflows/detections.yml`](.github/workflows/detections.yml)) on every push/PR that changes
 anything under `detections/`. The indicator-match test also runs when the upstream source files those
-indicators point to (`enrich/`, `selfupdate/`, `guard/`, `db/`, `cmd/artex/main.go`) change, catching the
+indicators point to (`enrich/`, `guard/`, `db/`, `cmd/artex/main.go`) change, catching the
 case where an upstream resync changes a User-Agent, marker, or default port and silently makes a rule
 stale. So a change that updates only a rule without updating the tests/layer, a rule that breaks a SigmaHQ
 convention, or a rule that is inconsistent with the source shows up red in CI before merge.

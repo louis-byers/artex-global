@@ -8,7 +8,7 @@ UI と生成される出力はデフォルトで英語になっており、**設
 
 日本語 · [English](README.md) · [한국어](README.ko.md) · [中文](README.zh.md) · [Español](README.es.md)
 
-[![ci](https://github.com/jiwoochris/artex-global/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/ci.yml) [![detections](https://github.com/jiwoochris/artex-global/actions/workflows/detections.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/detections.yml) [![web](https://github.com/jiwoochris/artex-global/actions/workflows/web.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/web.yml) [![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![ci](https://github.com/louis-byers/artex-global/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/ci.yml) [![detections](https://github.com/louis-byers/artex-global/actions/workflows/detections.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/detections.yml) [![web](https://github.com/louis-byers/artex-global/actions/workflows/web.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/web.yml) [![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
 </div>
 
@@ -58,7 +58,7 @@ ARTEX は、**自分が所有する標的、または明示的な書面による
 - **法的な境界を明示する** — 「許可された範囲のみ」という警告を明確に述べ、あわせてネットワーク法・プライバシー法に関する韓国固有の告知（メンテナーは韓国に拠点があります）を添えます。あなたが活動する地域の法律も同様に適用されます。
 - **多様な LLM スタックに対応する** — LLM プロバイダをフロンティアモデルから任意の OpenAI 互換エンドポイント（国内モデルやオープンモデル）に差し替えられます。[設定](#設定)を参照してください。
 
-> この多言語版の境界と設計方針は、リポジトリの作業ノートにより詳しく記録されています。上流リポジトリとの差分(diff)を取りやすいように、オリジナルの中国語ドキュメントは [`README.zh.md`](README.zh.md) として保存してあります。
+> この多言語版の境界と設計方針は、リポジトリの作業ノートにより詳しく記録されています。オリジナルの中国語ドキュメントは、派生元である上流プロジェクトへの帰属表示として [`README.zh.md`](README.zh.md) に保存してあります。
 
 ---
 
@@ -90,13 +90,13 @@ ARTEX は、**自分が所有する標的、または明示的な書面による
 
 > **前提条件:** Docker と Docker Compose。データベースは **PostgreSQL** で、compose が立ち上げます。探索には **LLM**（`ANTHROPIC_API_KEY` または `OPENAI_API_KEY`。UI でも設定できます）が必要です。
 
-> **イメージ:** `docker-compose.yml` の `artex` サービスは `ghcr.io/jiwoochris/artex-global` を取得します。これは、このリポジトリがリリースタグ（`v*`）ごとに GitHub Container Registry に公開するグローバル版のイメージです。デフォルトのタグは `latest`（最新リリース）です。特定のリリースに固定するには `.env` で `ARTEX_TAG` を設定してください。上流のオリジナルイメージ `autumn27/artex` は Docker Hub から取り下げられており、もう使われていません。
+> **イメージ:** `docker-compose.yml` の `artex` サービスは、リポジトリの `Dockerfile` でこのソースからイメージをビルドします。このフォークはビルド済みイメージやリリースバイナリを公開せず、アプリに自動アップデート機能はありません。
 
 ```bash
-git clone https://github.com/jiwoochris/artex-global.git
+git clone https://github.com/louis-byers/artex-global.git
 cd artex-global
 cp .env.example .env          # set POSTGRES_PASSWORD; ANTHROPIC_API_KEY is optional
-docker compose up -d          # brings up the artex image + postgres together
+docker compose up -d --build  # ソースから artex イメージをビルドし、postgres と一緒に起動
 # → open http://localhost:8787 (on first visit, set the admin password at /setup)
 #   /setup asks for the setup token printed in the startup log: docker compose logs artex | grep -F '[auth]'
 ```
@@ -105,9 +105,9 @@ docker compose up -d          # brings up the artex image + postgres together
 
 ### その他のインストール方法
 
-上流はいくつかの方法を提供しています。インストールスクリプト（`./install.sh`）、プリコンパイル済みバイナリ（Releases）、ソースからの単一バイナリビルドです。コマンドと手順の全体は [`README.zh.md`](README.zh.md#安装) の「安装」（インストール）の節（中国語）にまとめてありますが、要点を以下に再掲します。
+上流はいくつかの方法を提供しています。インストールスクリプト（`./install.sh`）、プリコンパイル済みバイナリ（Releases）、ソースからの単一バイナリビルドです。このフォークはソースからのビルドのみをサポートし、Releases は公開しません。コマンドと手順の全体は [`README.zh.md`](README.zh.md#安装) の「安装」（インストール）の節（中国語）にまとめてありますが、要点を以下に再掲します。
 
-- **インストールスクリプト:** `./install.sh` を実行すると Docker を検出／インストールし、続いて「① すべて Docker で」または「② ローカルでコンパイルして実行」を選べます。「① すべて Docker で」は上記のクイックスタートと同じイメージ（`ghcr.io/jiwoochris/artex-global`）を取得して起動します。一方「② ローカルでコンパイルして実行」は、下記の **ソースからの単一バイナリビルド** と同じやり方で自分でビルドします。
+- **インストールスクリプト:** `./install.sh` を実行すると Docker を検出／インストールし、続いて「① すべて Docker で」または「② ローカルでコンパイルして実行」を選べます。「① すべて Docker で」は上記のクイックスタートと同じイメージをソースからビルドして起動します。一方「② ローカルでコンパイルして実行」は、下記の **ソースからの単一バイナリビルド** と同じやり方で自分でビルドします。
 - **ソースからの単一バイナリビルド:**
 
   ```bash
@@ -119,7 +119,7 @@ docker compose up -d          # brings up the artex image + postgres together
 
 > 手順 1) の `npm ci` は、ビルドが必要とする devDependencies（例: `@tailwindcss/postcss`）をインストールします。シェルに `NODE_ENV=production` が設定されていると `npm ci` は devDependencies を省略し、ビルドは `Error: Cannot find module '@tailwindcss/postcss'` で失敗します。その場合は `npm ci --include=dev` でインストールしてください。
 
-> `./artex` を直接実行するのではなく、`start.sh`（Windows では `start.bat`）で起動してください。このスクリプトは、プログラムの終了コードに応じて再起動するスーパーバイザであり、UI の「ワンクリック更新」も処理します。
+> `./artex` を直接実行するのではなく、`start.sh`（Windows では `start.bat`）で起動してください。このスクリプトは、プログラムが異常終了したときに再起動するスーパーバイザです。アップデートはソースを取得して `./update.sh` で再ビルドします。
 
 ---
 

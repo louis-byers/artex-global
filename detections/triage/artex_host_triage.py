@@ -36,7 +36,7 @@
 #                               T1557).
 #   3. Log markers            the enrichment prober UA `artex-enrich/1.0`
 #                               (enrich/enrich.go), the self-update egress UA
-#                               `artex-selfupdate` (selfupdate/github.go), and the
+#                               `artex-selfupdate` (upstream builds only), and the
 #                               platform-guard audit marker (guard/guard.go) in the
 #                               log file(s) you point it at. Rotated logs that
 #                               logrotate compressed as .gz/.bz2/.xz are read
@@ -124,7 +124,7 @@ LOG_MARKERS = [
     {
         "value": "artex-selfupdate",
         "title": "self-update egress User-Agent",
-        "source": "selfupdate/github.go",
+        "source": "upstream jiwoochris/artex-global@v0.3.15-global.1 selfupdate/github.go",
         "severity": "medium",
         "caveat": "Seen in outbound logs from a host running ARTEX; the string is configurable.",
     },

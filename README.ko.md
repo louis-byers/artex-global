@@ -8,7 +8,7 @@
 
 한국어 · [中文](README.zh.md) · [English](README.md) · [Español](README.es.md) · [日本語](README.ja.md)
 
-[![ci](https://github.com/jiwoochris/artex-global/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/ci.yml) [![detections](https://github.com/jiwoochris/artex-global/actions/workflows/detections.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/detections.yml) [![web](https://github.com/jiwoochris/artex-global/actions/workflows/web.yml/badge.svg?branch=main)](https://github.com/jiwoochris/artex-global/actions/workflows/web.yml) [![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![ci](https://github.com/louis-byers/artex-global/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/ci.yml) [![detections](https://github.com/louis-byers/artex-global/actions/workflows/detections.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/detections.yml) [![web](https://github.com/louis-byers/artex-global/actions/workflows/web.yml/badge.svg?branch=main)](https://github.com/louis-byers/artex-global/actions/workflows/web.yml) [![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
 </div>
 
@@ -65,7 +65,7 @@ ARTEX 는 **자신이 소유하거나 서면으로 명시적 허가를 받은 �
 - **법적 고지**: "권한 범위 안에서만 사용" 경고를 분명히 제공하고, 메인테이너가 속한 대한민국 기준으로 정보통신망법·개인정보보호법 고지를 함께 둡니다. 어느 지역에서 쓰든 사용하는 곳의 법이 함께 적용됩니다.
 - **다양한 LLM 스택 대응**: LLM 공급자를 프런티어 모델뿐 아니라 OpenAI 호환 엔드포인트(자국·오픈 모델)로 교체할 수 있습니다. 아래 [설정](#설정)을 참고하십시오.
 
-> 다국어화의 경계와 설계 방침은 저장소의 작업 문서에 더 자세히 적혀 있습니다. 상류(upstream) 저장소의 변경을 대조하기 쉽도록 원본 중국어 문서는 `README.zh.md` 로 보존합니다.
+> 다국어화의 경계와 설계 방침은 저장소의 작업 문서에 더 자세히 적혀 있습니다. 원본 중국어 문서는 파생의 출처가 된 상류(upstream) 프로젝트를 밝히기 위해 `README.zh.md` 로 보존합니다.
 
 ---
 
@@ -97,13 +97,13 @@ ARTEX 는 **자신이 소유하거나 서면으로 명시적 허가를 받은 �
 
 > **사전 요구:** Docker 와 Docker Compose. 데이터베이스는 **PostgreSQL** 이며 compose 가 함께 띄웁니다. 탐색에는 **LLM** 이 필요합니다(`ANTHROPIC_API_KEY` 또는 `OPENAI_API_KEY`, UI 에서도 설정 가능).
 
-> **이미지:** `docker-compose.yml` 의 `artex` 서비스는 이 저장소가 릴리스 태그(`v*`)마다 GitHub Container Registry 에 발행하는 글로벌판 이미지 `ghcr.io/jiwoochris/artex-global` 를 받습니다. 기본 태그는 `latest`(가장 최근 릴리스)이고, `.env` 의 `ARTEX_TAG` 로 특정 릴리스에 고정할 수 있습니다. 원본 저장소의 이미지 `autumn27/artex` 는 Docker Hub 에서 내려가 더는 쓰지 않습니다.
+> **이미지:** `docker-compose.yml` 의 `artex` 서비스는 저장소의 `Dockerfile` 로 이 소스에서 이미지를 빌드합니다. 이 포크는 미리 빌드한 이미지나 릴리스 바이너리를 발행하지 않으며, 앱에 자가 업데이트 기능이 없습니다.
 
 ```bash
-git clone https://github.com/jiwoochris/artex-global.git
+git clone https://github.com/louis-byers/artex-global.git
 cd artex-global
 cp .env.example .env          # POSTGRES_PASSWORD 설정, ANTHROPIC_API_KEY 는 선택
-docker compose up -d          # artex 이미지 + postgres 를 함께 기동
+docker compose up -d --build  # 소스에서 artex 이미지를 빌드한 뒤 postgres 와 함께 기동
 # → http://localhost:8787 접속 (처음 들어가면 /setup 에서 관리자 비밀번호 설정)
 #   /setup 은 기동 로그에 찍힌 "설정 토큰"을 요구합니다: docker compose logs artex | grep -F '[auth]'
 ```
@@ -112,9 +112,9 @@ docker compose up -d          # artex 이미지 + postgres 를 함께 기동
 
 ### 그 밖의 설치 방법
 
-원본 저장소는 설치 스크립트(`./install.sh`), 사전 컴파일 바이너리(Releases), 소스 단일 바이너리 컴파일 등 여러 방법을 제공합니다. 명령과 절차는 [`README.zh.md`](README.zh.md#安装)의 "安装"(설치) 절에 정리되어 있으며, 아래 핵심만 옮깁니다.
+원본 저장소는 설치 스크립트(`./install.sh`), 사전 컴파일 바이너리(Releases), 소스 단일 바이너리 컴파일 등 여러 방법을 제공합니다. 이 포크는 소스 빌드만 지원하며 Releases 를 발행하지 않습니다. 명령과 절차는 [`README.zh.md`](README.zh.md#安装)의 "安装"(설치) 절에 정리되어 있으며, 아래 핵심만 옮깁니다.
 
-- **설치 스크립트:** `./install.sh` 를 실행하면 Docker 감지·설치 후 "① 전부 Docker" 또는 "② 로컬 컴파일 실행"을 고르게 합니다. "① 전부 Docker" 는 위 빠른 시작과 같은 이미지(`ghcr.io/jiwoochris/artex-global`)를 받아 기동하고, "② 로컬 컴파일 실행"은 아래 **소스에서 단일 바이너리 컴파일**과 같은 방식으로 직접 빌드합니다.
+- **설치 스크립트:** `./install.sh` 를 실행하면 Docker 감지·설치 후 "① 전부 Docker" 또는 "② 로컬 컴파일 실행"을 고르게 합니다. "① 전부 Docker" 는 위 빠른 시작과 같은 이미지를 소스에서 빌드해 기동하고, "② 로컬 컴파일 실행"은 아래 **소스에서 단일 바이너리 컴파일**과 같은 방식으로 직접 빌드합니다.
 - **소스에서 단일 바이너리 컴파일:**
 
   ```bash
@@ -126,7 +126,7 @@ docker compose up -d          # artex 이미지 + postgres 를 함께 기동
 
 > 1) 단계의 `npm ci` 는 빌드에 필요한 devDependencies(예: `@tailwindcss/postcss`)를 함께 설치합니다. 셸에 `NODE_ENV=production` 이 설정돼 있으면 `npm ci` 가 devDependencies 를 건너뛰어 빌드가 `Error: Cannot find module '@tailwindcss/postcss'` 로 실패하므로, 이때는 `npm ci --include=dev` 로 받으십시오.
 
-> 실행은 `./artex` 를 직접 돌리지 말고 `start.sh`(Windows 는 `start.bat`)로 하십시오. 이 스크립트는 종료 코드에 따라 프로그램을 다시 띄우는 감시자이고, UI 의 "원클릭 업데이트"도 이 스크립트가 처리합니다.
+> 실행은 `./artex` 를 직접 돌리지 말고 `start.sh`(Windows 는 `start.bat`)로 하십시오. 이 스크립트는 프로그램이 비정상 종료하면 다시 띄우는 감시자입니다. 업데이트는 소스를 받은 뒤 `./update.sh` 로 다시 빌드합니다.
 
 ---
 

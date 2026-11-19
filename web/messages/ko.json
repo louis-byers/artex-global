@@ -149,9 +149,6 @@
     "viewTasks": "작업 보기"
   },
   "header": {
-    "updateBadge": "새 버전 {latest}",
-    "updateBadgeShort": "새 버전",
-    "updateTitle": "새 버전 {latest} 발견. 클릭하면 업데이트로 이동합니다.",
     "version": "버전 · {version}"
   },
   "nav": {
@@ -3185,46 +3182,6 @@
       "title": "세션 입력창 전송 키",
       "desc": "대화 페이지와 작업 상세의 메인 에이전트 세션 입력창이 이 설정을 공유하며, 선택하면 즉시 적용되고 저장할 필요가 없습니다.<br></br>이 설정은 <b>이 브라우저에만 저장</b>되고 계정과 동기화되지 않으므로, 브라우저를 바꾸거나 사이트 데이터를 지우면 다시 설정해야 합니다.",
       "label": "전송 방식"
-    },
-    "update": {
-      "title": "버전과 업데이트",
-      "desc": "GitHub에서 새 버전을 확인하고 설치합니다. 업데이트하면 프로그램이 재시작되고 실행 중인 작업이 중단됩니다.",
-      "currentVersion": "현재 버전",
-      "latestVersion": "최신 버전",
-      "modeDocker": "Docker",
-      "modeStandalone": "독립 실행 프로그램",
-      "changelog": "변경 로그",
-      "connectError": "GitHub에 연결할 수 없습니다: {error} 위에서 전역 프록시를 설정한 뒤 다시 시도할 수 있습니다.",
-      "noAsset": "{latest}에는 {os}/{arch}용 릴리스 패키지가 없어({asset} 누락) 자동으로 업데이트할 수 없습니다.",
-      "willDownloadPrefix": "다운로드 대상: ",
-      "willDownloadSize": " ({size})",
-      "willDownloadSuffix": ". SHA256 검증과 스모크 테스트를 통과한 뒤에만 교체하며, 실패하면 현재 버전을 자동으로 유지합니다.",
-      "upToDate": "이미 최신 버전입니다.",
-      "dockerNote": "Docker 환경의 업데이트는 프로그램 본체만 교체하고 이미지의 playwright / nmap 등 도구 체인은 갱신하지 않습니다. 또한 <code>docker compose up -d</code> 명령으로 컨테이너를 재생성하면 이미지에 포함된 버전으로 되돌아갑니다. 이미지까지 함께 업그레이드하려면 <code>docker compose pull artex && docker compose up -d artex</code> 명령을 실행하세요.",
-      "restarting": "재시작하고 새 버전을 적용하는 중입니다. 잠시 기다려 주세요 (페이지가 자동으로 새로고침됩니다)…",
-      "check": "업데이트 확인",
-      "updateToVersion": "{latest} 버전으로 업데이트",
-      "updateNow": "지금 업데이트",
-      "rollback": "이전 버전으로 롤백",
-      "footer": "원클릭 업데이트는 데몬 스크립트가 프로그램을 재시작하는 기능에 의존합니다. <code>start.sh</code>(Windows는 <code>start.bat</code>)로 ARTEX를 시작하세요. artex 본체를 직접 실행하면 프로그램이 종료된 뒤 자동으로 다시 시작되지 않습니다.",
-      "toast": {
-        "checkFailed": "업데이트 확인 실패: {error}",
-        "found": "새 버전 {latest} 발견",
-        "upToDate": "이미 최신 버전입니다",
-        "updated": "{version} 버전으로 업데이트했습니다. 페이지를 다시 불러오는 중",
-        "restartTimeout": "서비스 재시작 대기 시간이 초과되었습니다. 백엔드 로그를 확인하거나 artex가 start.sh / start.bat로 시작되었는지 확인하세요.",
-        "updateFailed": "업데이트 실패: {error}",
-        "startFailed": "업데이트 시작 실패: {error}",
-        "rollbackSwitched": "이전 버전으로 전환했습니다. 재시작 중…",
-        "rollbackFailed": "롤백 실패: {error}",
-        "preparing": "준비 중…"
-      },
-      "confirm": {
-        "title": "{latest} 버전으로 업데이트할까요?",
-        "restart": "업데이트하면 프로그램이 재시작되고 실행 중인 작업이 중단됩니다.",
-        "docker": "참고: 컨테이너 내 업데이트는 프로그램 본체만 교체하며, 이미지의 playwright / nmap 등 도구 체인은 갱신하지 않습니다. 새 버전이 새 도구에 의존하면 docker compose pull로 바꿔 실행하세요.",
-        "rollback": "이전 버전으로 롤백할까요?\n\n프로그램이 재시작되고 실행 중인 작업이 중단됩니다.\n참고: 데이터베이스 구조는 되돌아가지 않으며, 이전 버전이 새 버전에서 기록한 데이터를 인식하지 못할 수 있습니다."
-      }
     },
     "language": {
       "title": "표시 언어",

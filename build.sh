@@ -173,8 +173,8 @@ package_binary() {
   rm -rf "$package_root" "$archive"
   mkdir -p "$package_root"
   cp "$binary" "$package_root/"
-  # 데몬 시작 스크립트가 정식 진입점입니다. 화면의 원클릭 업데이트는 프로세스가 종료된 뒤 이 스크립트가 다시 띄워 줘야 동작하고,
-  # artex 본체를 직접 실행하면 업데이트 후 다시 기동되지 않습니다. 대상 시스템에 맞는 한 벌만 포함합니다.
+  # 데몬 시작 스크립트가 정식 진입점입니다. 비정상 종료 시 다시 띄우고 SIGTERM 을 전달합니다.
+  # 대상 시스템에 맞는 한 벌만 포함합니다.
   if [ "$goos" = "windows" ]; then
     cp start.bat "$package_root/"
   else

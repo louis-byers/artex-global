@@ -357,7 +357,7 @@ RESULT: PASS
 ARTEX 트래픽에 조용히 매칭을 멈춥니다. 각 지표에 대해 양방향으로 단언합니다:
 
 - **소스가 여전히 내보냄**: 값이 그것을 만들어 내는 상류 소스 파일에 존재합니다(`enrich/enrich.go`
-  의 `artex-enrich/1.0`, `selfupdate/` 의 `artex-selfupdate`, `guard/guard.go` 의 가드 마커). 값이
+  의 `artex-enrich/1.0`, `artex-selfupdate`(상류 빌드만), `guard/guard.go` 의 가드 마커). 값이
   없다는 것은 규칙이 아직 따라잡지 못한 상류 변경을 뜻합니다.
 - **규칙이 여전히 고정함**: 값이 그것을 기반으로 세운 규칙에 존재하므로, 규칙 편집이 지표를 소스에서
   조용히 떼어 놓을 수 없습니다. Suricata 규칙은 `startswith` 접두어로 확인하는데, 이는 그 규칙이
@@ -456,7 +456,7 @@ detections/tests/misp/run.sh
 
 여덟 스위트는 모두 `detections/` 를 건드리는 모든 push 나 pull request 에서 CI 로 돕니다
 ([`../../.github/workflows/detections.yml`](../../.github/workflows/detections.yml) 참조). 그리고 지표
-테스트는 그것이 고정한 상류 소스 파일(`enrich/`, `selfupdate/`, `guard/`, `db/`, `cmd/artex/main.go`)이
+테스트는 그것이 고정한 상류 소스 파일(`enrich/`, `guard/`, `db/`, `cmd/artex/main.go`)이
 바뀔 때도 돕니다. 그래서 지표를 떨어뜨리거나, ATT&CK 레이어에서 어긋나거나, 문서화한 백엔드에서
 변환이 멈추거나, SigmaHQ 관례를 깨거나, 소스와 동기화가 어긋나거나, MISP 이벤트가 CSV 에서 어긋나게
 두거나, 워크플로가 아직 감시하지 않는 새 소스를 고정하는 규칙 변경은 머지되기 전에 빌드를 빨갛게

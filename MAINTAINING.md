@@ -97,7 +97,7 @@ git log --name-status --oneline d003372..upstream/main
   **새로 생긴 사용자 응답 문구**(`writeErr` 등)가 있는지 확인해서 한국어 상수로 번역합니다.
 - UI(`web/src/**`)가 바뀌어 **새 화면 문자열**이 생겼다면 → 하드코딩하지 말고
   `web/messages/zh.json`(원문)과 `web/messages/ko.json`(번역)에 같은 키로 추가합니다.
-- **탐지 규칙이 고정한 상류 지표**(`enrich/enrich.go` 의 프로버 User-Agent, `selfupdate/` 의
+- **탐지 규칙이 고정한 상류 지표**(`enrich/enrich.go` 의 프로버 User-Agent, 상류 빌드만 내보내는
   자가 갱신 User-Agent, `guard/guard.go` 의 감사 마커, `db/db.go` 의 파괴명령 deny 목록,
   `cmd/artex/main.go` 의 기본 리슨·기록 프록시 포트)가 바뀌었다면 → `detections/` 의
   Sigma·Suricata 규칙과 ATT&CK 레이어, 그리고 `detections/indicators/artex_indicators.csv` 의
@@ -326,84 +326,16 @@ DOWN(404·410·5xx·연결 오류, 깨졌을 가능성 높음).
 
 ## 9. 릴리스 발행 파이프라인
 
-버전 태그(`v*`)를 밀면 [`.github/workflows/release.yml`](.github/workflows/release.yml) 이 다섯
-플랫폼용 바이너리와, 조건을 만족할 때 멀티아키텍처 Docker 이미지를 만듭니다. 이 포크는 안정 릴리스 태그(`v0.3.15-global.1`, `v0.3.15-ko.1`)를 발행해 이 워크플로가 실행된 적이 있으며, 이 절은 파이프라인이
-무엇을 전제하고 무엇을 산출하는지, 그리고 그 전제가 지금 저장소 구조와 맞는지를 정리합니다.
-태그를 밀면 공개 저장소에 GitHub Release 가 생기므로, 릴리스를 끊는 일은 발행 결정이 선 뒤에
-합니다.
+이 포크는 미리 빌드한 산출물을 발행하지 않습니다. 릴리스 워크플로(`release.yml`)와 앱의 자가 업데이트(`selfupdate/`)는
+제거했습니다. 따라서 Release zip, `SHA256SUMS`, GHCR 이미지가 없습니다. 이전에 발행한 태그(`v0.3.15-global.1`, `v0.3.15-ko.1`)의
+산출물은 상류 `jiwoochris/artex-global` 에 남아 있으며, 이 포크의 설치 경로는 그것을 쓰지 않습니다.
 
-### 9.1 릴리스를 끊는 법
+모든 설치는 소스에서 빌드합니다.
 
-`v` 로 시작하는 태그를 밀면 워크플로가 발화합니다.
+- **Docker:** `docker compose up -d --build`. [`Dockerfile`](Dockerfile) 이 web 과 Go 를 빌드 단계에서 컴파일합니다.
+  [`ci`](.github/workflows/ci.yml) 워크플로의 `docker-build` 잡이 `docker build --target go .` 로 이 빌드를 검증합니다.
+- **로컬 바이너리:** `./install.sh` 의 "② 로컬 컴파일 실행", 또는 [`build.sh`](build.sh).
+- **업데이트:** `git pull` 뒤 `./update.sh`. 소스에서 다시 빌드합니다.
 
-```bash
-git tag v0.3.15
-git push origin v0.3.15
-```
-
-### 9.2 파이프라인이 하는 일
-
-워크플로는 잡 네 개로 나뉩니다.
-
-- **frontend.** 프런트엔드를 정적으로 한 번 내보내고(`web/out`) 그 산출물을 `web-dist`
-  아티팩트로 올립니다. 아래 binaries 잡이 대상마다 이 산출물을 다시 받아 재사용합니다.
-- **binaries.** 다섯 대상(linux amd64·arm64, darwin amd64·arm64, windows amd64)을 교차
-  컴파일하고 대상마다 zip 으로 묶습니다. linux amd64 바이너리에는 `artex -h` 스모크 테스트를
-  돌려 바이너리가 실제로 실행되는지 확인합니다.
-- **release.** 모든 zip 을 모아 `SHA256SUMS` 체크섬을 만들고, GitHub Release 를 생성해 zip 과
-  체크섬을 첨부합니다.
-- **docker.** binaries 가 교차 컴파일한 linux 바이너리를 받아 멀티아키텍처(amd64·arm64) 이미지를
-  빌드하고 GitHub Container Registry 의 `ghcr.io/jiwoochris/artex-global` 에 릴리스 태그와 `latest`
-  로 올립니다. 로그인은 워크플로 기본 `GITHUB_TOKEN`(잡 권한 `packages: write`)으로 하므로 따로
-  둘 시크릿이 없습니다.
-
-### 9.3 빌드 전제가 저장소 구조와 맞는가
-
-파이프라인은 다음 세 가지 전제 위에서 동작하며, 이 전제가 지금 저장소 구조와 모두 맞는지를
-로컬에서 binaries 잡을 직접 재현해 확인했습니다.
-
-- **프런트엔드 임베드.** frontend 잡이 올린 `web-dist`(= `web/out` 의 내용)를 binaries 잡이
-  `server/webui/dist` 로 받고, `server/webui_embed.go` 의 `//go:embed all:webui/dist` 가 그 자리를
-  바이너리에 임베드합니다. 그래서 binaries 잡은 프런트엔드를 다시 빌드하지 않고
-  `ARTEX_SKIP_FRONTEND=1` 로 [`build.sh`](build.sh) 를 호출합니다.
-- **바이너리·패키지 경로.** `build.sh --target <os>/<arch>` 는 `dist/artex-<os>-<arch>/artex`
-  바이너리와 `dist/` 아래 zip 패키지를 만듭니다. zip 에는 바이너리와 함께 시작 스크립트(리눅스·
-  macOS 는 `start.sh`, 윈도우는 `start.bat`), `skills/`, `config.example.json`, `README.md` 가
-  들어갑니다.
-- **Docker 이미지의 바이너리 복사.** binaries 잡은 linux 바이너리를 `bin-linux-<arch>`
-  아티팩트로 따로 올리고, docker 잡이 이것을 `dist/<arch>/artex` 로 받습니다.
-  [`Dockerfile`](Dockerfile) 의 `COPY dist/${TARGETARCH}/artex` 가, 멀티아키텍처 빌드에서 buildx
-  가 각 플랫폼에 맞춰 채워 주는 `TARGETARCH` 로 그 경로를 집습니다.
-  [`.dockerignore`](.dockerignore) 는 `dist/` 를 제외하지 않으므로 바이너리가 빌드 컨텍스트에
-  포함됩니다.
-
-### 9.4 Docker 이미지 네임스페이스
-
-이미지는 이 포크가 소유한 `ghcr.io/jiwoochris/artex-global` 로 발행하고, `docker-compose.yml` 도 이
-이미지를 받습니다(2026-10-11 결정, `work/DECISIONS-FOR-JIWOO.md` 8번 항목). 상류의
-`autumn27/artex` 는 Docker Hub 에서 내려갔고 이 포크에는 push 권한도 없어 쓰지 않습니다.
-GHCR 패키지는 처음 발행될 때 비공개로 만들어질 수 있으니, 첫 릴리스 뒤 패키지 설정에서 공개
-(public)인지 확인합니다. 비공개면 `docker compose pull` 이 인증 오류로 실패합니다.
-
-### 9.5 태그 없이 로컬에서 미리 검증하기
-
-공개 릴리스를 끊지 않고 파이프라인 전제만 확인하려면, binaries 잡을 로컬에서 재현합니다.
-로컬에 Go 가 없으면 Docker 로 동일하게 돌릴 수 있습니다.
-
-```bash
-# 1) 프런트엔드 정적 내보내기(release.yml 의 frontend 잡에 해당)
-cd web && npm ci && npm run build:static && cd ..
-# 2) binaries 잡이 아티팩트를 받는 자리에 배치
-rm -rf server/webui/dist && mkdir -p server/webui/dist && cp -a web/out/. server/webui/dist/
-# 3) 한 대상만 binaries 잡과 같은 환경으로 빌드
-docker run --rm -v "$PWD":/app -w /app \
-  -e ARTEX_SKIP_FRONTEND=1 -e ARTEX_SKIP_NPM_CI=1 \
-  -e ARTEX_COMPRESS=0 -e ARTEX_PACKAGE=1 -e ARTEX_PACKAGE_DIR=dist \
-  -e ARTEX_BUILD_VERSION=v0.0.0-local \
-  golang:1.26 bash -c 'apt-get update && apt-get install -y zip && ./build.sh --target linux/amd64'
-# 4) 산출물 확인: dist/artex-linux-amd64/artex · dist/*.zip · dist/SHA256SUMS
-```
-
-`dist/artex-linux-amd64/artex` 는 정적 링크된 ELF 이고, `-h` 를 주면 사용법을 출력한 뒤 종료
-코드 0 으로 끝납니다. 이것이 binaries 잡의 스모크 테스트가 확인하는 동작입니다. 빌드 산출물
-(`dist/`·`server/webui/dist/`)은 저장소에 커밋하지 않습니다(`.gitignore` 로 제외됩니다).
+버전 문자열은 `-ldflags "-X main.version=..."` 로 넣습니다. `install.sh`·`update.sh` 는 `git describe --tags --always --dirty`
+값을 `ARTEX_VERSION` 빌드 인자로 넘기고, 값이 없으면 `dev` 입니다.

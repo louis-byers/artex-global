@@ -149,9 +149,6 @@
     "viewTasks": "View tasks"
   },
   "header": {
-    "updateBadge": "New version {latest}",
-    "updateBadgeShort": "New version",
-    "updateTitle": "New version {latest} found. Click to go to the update.",
     "version": "Version · {version}"
   },
   "nav": {
@@ -3185,46 +3182,6 @@
       "title": "Session input box send key",
       "desc": "The conversation page and the main agent session input box in the task details share this setting; selecting it applies immediately with no need to save.<br></br>This setting is <b>saved only in this browser</b> and is not synced to your account, so if you change browsers or clear site data you'll need to set it again.",
       "label": "Send method"
-    },
-    "update": {
-      "title": "Version and Updates",
-      "desc": "Check for and install new versions from GitHub. Updating restarts the program and interrupts running tasks.",
-      "currentVersion": "Current version",
-      "latestVersion": "Latest version",
-      "modeDocker": "Docker",
-      "modeStandalone": "Standalone program",
-      "changelog": "Changelog",
-      "connectError": "Can't connect to GitHub: {error} You can set the global proxy above and try again.",
-      "noAsset": "{latest} has no release package for {os}/{arch} ({asset} missing), so it can't be updated automatically.",
-      "willDownloadPrefix": "Will download: ",
-      "willDownloadSize": " ({size})",
-      "willDownloadSuffix": ". It is replaced only after passing SHA256 verification and a smoke test; if either fails, the current version is kept automatically.",
-      "upToDate": "You're already on the latest version.",
-      "dockerNote": "In a Docker environment, updating replaces only the program itself and does not update the image's tool chain such as playwright / nmap. Also, recreating the container with <code>docker compose up -d</code> reverts to the version bundled in the image. To upgrade the image as well, run <code>docker compose pull artex && docker compose up -d artex</code>.",
-      "restarting": "Restarting and applying the new version. Please wait (the page will refresh automatically)…",
-      "check": "Check for updates",
-      "updateToVersion": "Update to {latest}",
-      "updateNow": "Update now",
-      "rollback": "Roll back to the previous version",
-      "footer": "One-click update relies on the daemon script restarting the program. Start ARTEX with <code>start.sh</code> (<code>start.bat</code> on Windows). If you run the artex binary directly, it won't restart automatically after the program exits.",
-      "toast": {
-        "checkFailed": "Update check failed: {error}",
-        "found": "Found new version {latest}",
-        "upToDate": "You're already on the latest version",
-        "updated": "Updated to {version}. Reloading the page",
-        "restartTimeout": "Timed out waiting for the service to restart. Check the backend logs or verify that artex was started with start.sh / start.bat.",
-        "updateFailed": "Update failed: {error}",
-        "startFailed": "Failed to start the update: {error}",
-        "rollbackSwitched": "Switched to the previous version. Restarting…",
-        "rollbackFailed": "Rollback failed: {error}",
-        "preparing": "Preparing…"
-      },
-      "confirm": {
-        "title": "Update to {latest}?",
-        "restart": "Updating restarts the program and interrupts running tasks.",
-        "docker": "Note: updating inside the container replaces only the program itself and does not update the image's tool chain such as playwright / nmap. If the new version depends on new tools, switch to running it with docker compose pull.",
-        "rollback": "Roll back to the previous version?\n\nThe program will restart and running tasks will be interrupted.\nNote: the database structure is not rolled back, and the previous version may not recognize data written by the new version."
-      }
     },
     "language": {
       "title": "Display language",

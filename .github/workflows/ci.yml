@@ -1,7 +1,7 @@
 name: ci
 # 푸시와 PR 마다 빌드·정적 분석·테스트를 돌려, 한국어화 과정에서 생긴 회귀를
-# 머지 전에 잡는다. 릴리스 워크플로(release.yml)는 태그(v*)에서만 돌고 빌드·배포만
-# 하므로, 일상적인 변경을 검증하는 역할은 이 워크플로가 맡는다.
+# 머지 전에 잡는다. 미리 빌드한 릴리스 산출물은 발행하지 않으며, 모든 설치는 소스에서
+# 빌드하므로 Dockerfile 빌드도 이 워크플로가 검증한다.
 on:
   push:
     branches: ["**"]
@@ -31,6 +31,15 @@ jobs:
         run: go vet ./...
       - name: go test (DB 없음 — 통합 테스트는 스킵)
         run: go test ./... -count=1
+
+  # Docker 설치 경로는 Dockerfile 이 소스에서 web + Go 를 빌드한다. 그 빌드가 깨지지 않았는지
+  # go 단계까지만 확인한다(실행 이미지의 Playwright 계층은 느리고 소스와 무관하므로 건너뛴다).
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker build (go 단계까지)
+        run: docker build --target go .
 
   # 실제 PostgreSQL 이 있어야 도는 DB 통합 테스트(알림·증거·사용량 계량 등)를 맡는다.
   # 위 go job 이 스킵하는 경로(알림 채널 검증, 증거 저장, llm_usage 계량 등)를 실제
